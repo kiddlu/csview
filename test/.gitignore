@@ -1,0 +1,7 @@
+# Test output files
+output/
+*.log
+*.tmp
+
+# Test reports (optional - you may want to keep these)
+# test_report.md

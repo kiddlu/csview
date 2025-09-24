@@ -3,3 +3,8 @@
 src/*.o
 csview
 test*.csv
+
+# Test output files
+test/output/
+test/*.log
+test/*.tmp

@@ -222,7 +222,11 @@ static char *calc_pad(const char *str, int width, int align, bool truncate)
             break;
     }
 
-    char *result = malloc(width + 1);
+    // Calculate required buffer size: string bytes + padding spaces + null terminator
+    size_t str_bytes  = strlen(str);
+    size_t total_size = str_bytes + left_pad + right_pad + 1;
+
+    char *result = malloc(total_size);
     if (!result)
         return NULL;
 
@@ -236,7 +240,7 @@ static char *calc_pad(const char *str, int width, int align, bool truncate)
 
     // Add string
     strcpy(p, str);
-    p += strlen(str);
+    p += str_bytes;
 
     // Add right padding
     for (int i = 0; i < right_pad; i++)
