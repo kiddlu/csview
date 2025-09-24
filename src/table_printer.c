@@ -5,9 +5,14 @@
 #include "table_printer.h"
 #include "utils.h"
 
-static row_sep_t *create_row_sep(const char *inner, const char *ljunc, const char *cjunc, const char *rjunc) {
+static row_sep_t *create_row_sep(const char *inner,
+                                 const char *ljunc,
+                                 const char *cjunc,
+                                 const char *rjunc)
+{
     row_sep_t *sep = malloc(sizeof(row_sep_t));
-    if (!sep) return NULL;
+    if (!sep)
+        return NULL;
     sep->inner = strdup(inner);
     sep->ljunc = strdup(ljunc);
     sep->cjunc = strdup(cjunc);
@@ -15,7 +20,8 @@ static row_sep_t *create_row_sep(const char *inner, const char *ljunc, const cha
     return sep;
 }
 
-static col_seps_t create_col_seps(const char *lhs, const char *mid, const char *rhs) {
+static col_seps_t create_col_seps(const char *lhs, const char *mid, const char *rhs)
+{
     col_seps_t seps;
     seps.lhs = lhs ? strdup(lhs) : NULL;
     seps.mid = mid ? strdup(mid) : NULL;
@@ -23,15 +29,20 @@ static col_seps_t create_col_seps(const char *lhs, const char *mid, const char *
     return seps;
 }
 
-table_format_t *create_table_style(table_style_t style_type, int padding, int indent,
-                                   alignment_t header_align, alignment_t body_align) {
+table_format_t *create_table_style(table_style_t style_type,
+                                   int           padding,
+                                   int           indent,
+                                   alignment_t   header_align,
+                                   alignment_t   body_align)
+{
     table_format_t *style = malloc(sizeof(table_format_t));
-    if (!style) return NULL;
+    if (!style)
+        return NULL;
 
-    style->padding = padding;
-    style->indent = indent;
+    style->padding      = padding;
+    style->indent       = indent;
     style->header_align = header_align;
-    style->body_align = body_align;
+    style->body_align   = body_align;
 
     // Initialize row separators to NULL
     style->row_seps.top = NULL;
@@ -39,13 +50,14 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
     style->row_seps.mid = NULL;
     style->row_seps.bot = NULL;
 
-    switch (style_type) {
+    switch (style_type)
+    {
         case STYLE_NONE:
             style->col_seps = create_col_seps(NULL, NULL, NULL);
             break;
 
         case STYLE_ASCII:
-            style->col_seps = create_col_seps("|", "|", "|");
+            style->col_seps     = create_col_seps("|", "|", "|");
             style->row_seps.top = create_row_sep("-", "+", "+", "+");
             style->row_seps.snd = create_row_sep("-", "+", "+", "+");
             style->row_seps.mid = NULL;
@@ -53,7 +65,7 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
             break;
 
         case STYLE_ASCII2:
-            style->col_seps = create_col_seps(" ", "|", " ");
+            style->col_seps     = create_col_seps(" ", "|", " ");
             style->row_seps.top = NULL;
             style->row_seps.snd = create_row_sep("-", " ", "+", " ");
             style->row_seps.mid = NULL;
@@ -61,7 +73,7 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
             break;
 
         case STYLE_SHARP:
-            style->col_seps = create_col_seps("│", "│", "│");
+            style->col_seps     = create_col_seps("│", "│", "│");
             style->row_seps.top = create_row_sep("─", "┌", "┬", "┐");
             style->row_seps.snd = create_row_sep("─", "├", "┼", "┤");
             style->row_seps.mid = NULL;
@@ -69,7 +81,7 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
             break;
 
         case STYLE_ROUNDED:
-            style->col_seps = create_col_seps("│", "│", "│");
+            style->col_seps     = create_col_seps("│", "│", "│");
             style->row_seps.top = create_row_sep("─", "╭", "┬", "╮");
             style->row_seps.snd = create_row_sep("─", "├", "┼", "┤");
             style->row_seps.mid = NULL;
@@ -77,7 +89,7 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
             break;
 
         case STYLE_REINFORCED:
-            style->col_seps = create_col_seps("│", "│", "│");
+            style->col_seps     = create_col_seps("│", "│", "│");
             style->row_seps.top = create_row_sep("─", "┏", "┬", "┓");
             style->row_seps.snd = create_row_sep("─", "├", "┼", "┤");
             style->row_seps.mid = NULL;
@@ -85,7 +97,7 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
             break;
 
         case STYLE_MARKDOWN:
-            style->col_seps = create_col_seps("|", "|", "|");
+            style->col_seps     = create_col_seps("|", "|", "|");
             style->row_seps.top = NULL;
             style->row_seps.snd = create_row_sep("-", "|", "|", "|");
             style->row_seps.mid = NULL;
@@ -93,7 +105,7 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
             break;
 
         case STYLE_GRID:
-            style->col_seps = create_col_seps("│", "│", "│");
+            style->col_seps     = create_col_seps("│", "│", "│");
             style->row_seps.top = create_row_sep("─", "┌", "┬", "┐");
             style->row_seps.snd = create_row_sep("─", "├", "┼", "┤");
             style->row_seps.mid = create_row_sep("─", "├", "┼", "┤");
@@ -102,7 +114,7 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
 
         default:
             // Default to SHARP style
-            style->col_seps = create_col_seps("│", "│", "│");
+            style->col_seps     = create_col_seps("│", "│", "│");
             style->row_seps.top = create_row_sep("─", "┌", "┬", "┐");
             style->row_seps.snd = create_row_sep("─", "├", "┼", "┤");
             style->row_seps.mid = NULL;
@@ -113,13 +125,16 @@ table_format_t *create_table_style(table_style_t style_type, int padding, int in
     return style;
 }
 
-void free_table_style(table_format_t *style) {
-    if (style) {
+void free_table_style(table_format_t *style)
+{
+    if (style)
+    {
         free(style->col_seps.lhs);
         free(style->col_seps.mid);
         free(style->col_seps.rhs);
 
-        if (style->row_seps.top) {
+        if (style->row_seps.top)
+        {
             free(style->row_seps.top->inner);
             free(style->row_seps.top->ljunc);
             free(style->row_seps.top->cjunc);
@@ -127,7 +142,8 @@ void free_table_style(table_format_t *style) {
             free(style->row_seps.top);
         }
 
-        if (style->row_seps.snd) {
+        if (style->row_seps.snd)
+        {
             free(style->row_seps.snd->inner);
             free(style->row_seps.snd->ljunc);
             free(style->row_seps.snd->cjunc);
@@ -135,7 +151,8 @@ void free_table_style(table_format_t *style) {
             free(style->row_seps.snd);
         }
 
-        if (style->row_seps.mid) {
+        if (style->row_seps.mid)
+        {
             free(style->row_seps.mid->inner);
             free(style->row_seps.mid->ljunc);
             free(style->row_seps.mid->cjunc);
@@ -143,7 +160,8 @@ void free_table_style(table_format_t *style) {
             free(style->row_seps.mid);
         }
 
-        if (style->row_seps.bot) {
+        if (style->row_seps.bot)
+        {
             free(style->row_seps.bot->inner);
             free(style->row_seps.bot->ljunc);
             free(style->row_seps.bot->cjunc);
@@ -155,56 +173,64 @@ void free_table_style(table_format_t *style) {
     }
 }
 
-static char *calc_pad(const char *str, int width, int align, bool truncate) {
-    if (!str) return NULL;
+static char *calc_pad(const char *str, int width, int align, bool truncate)
+{
+    if (!str)
+        return NULL;
 
     int str_width = unicode_display_width(str);
 
     // If string is already wider than target width and truncate is enabled
-    if (truncate && str_width > width) {
+    if (truncate && str_width > width)
+    {
         // Simple byte-based truncation for now
         // TODO: Could use libunistring's uc_truncate for proper Unicode truncation
         size_t max_bytes = width < (int)strlen(str) ? (size_t)width : strlen(str);
-        char *result = malloc(max_bytes + 1);
-        if (!result) return NULL;
+        char  *result    = malloc(max_bytes + 1);
+        if (!result)
+            return NULL;
         strncpy(result, str, max_bytes);
         result[max_bytes] = '\0';
         return result;
     }
 
-    if (str_width >= width) {
+    if (str_width >= width)
+    {
         return strdup(str);
     }
 
     int padding = width - str_width;
     int left_pad, right_pad;
 
-    switch (align) {
-        case 0: // Left
-            left_pad = 0;
+    switch (align)
+    {
+        case 0:  // Left
+            left_pad  = 0;
             right_pad = padding;
             break;
-        case 1: // Center
-            left_pad = padding / 2;
+        case 1:  // Center
+            left_pad  = padding / 2;
             right_pad = padding - left_pad;
             break;
-        case 2: // Right
-            left_pad = padding;
+        case 2:  // Right
+            left_pad  = padding;
             right_pad = 0;
             break;
         default:
-            left_pad = 0;
+            left_pad  = 0;
             right_pad = padding;
             break;
     }
 
     char *result = malloc(width + 1);
-    if (!result) return NULL;
+    if (!result)
+        return NULL;
 
     char *p = result;
 
     // Add left padding
-    for (int i = 0; i < left_pad; i++) {
+    for (int i = 0; i < left_pad; i++)
+    {
         *p++ = ' ';
     }
 
@@ -213,7 +239,8 @@ static char *calc_pad(const char *str, int width, int align, bool truncate) {
     p += strlen(str);
 
     // Add right padding
-    for (int i = 0; i < right_pad; i++) {
+    for (int i = 0; i < right_pad; i++)
+    {
         *p++ = ' ';
     }
 
@@ -222,110 +249,149 @@ static char *calc_pad(const char *str, int width, int align, bool truncate) {
     return result;
 }
 
-static void print_row_separator(FILE *output, table_format_t *style, int *widths, int col_count, row_sep_t *sep) {
-    if (!sep) return;
+static void print_row_separator(FILE           *output,
+                                table_format_t *style,
+                                int            *widths,
+                                int             col_count,
+                                row_sep_t      *sep)
+{
+    if (!sep)
+        return;
 
     // Print indent
-    for (int i = 0; i < style->indent; i++) {
+    for (int i = 0; i < style->indent; i++)
+    {
         fputc(' ', output);
     }
 
     // Print left junction
-    if (style->col_seps.lhs) {
+    if (style->col_seps.lhs)
+    {
         fputs(sep->ljunc, output);
     }
 
     // Print column separators
-    for (int i = 0; i < col_count; i++) {
-        for (int j = 0; j < widths[i] + style->padding * 2; j++) {
+    for (int i = 0; i < col_count; i++)
+    {
+        for (int j = 0; j < widths[i] + style->padding * 2; j++)
+        {
             fputs(sep->inner, output);
         }
-        if (style->col_seps.mid && i < col_count - 1) {
+        if (style->col_seps.mid && i < col_count - 1)
+        {
             fputs(sep->cjunc, output);
         }
     }
 
     // Print right junction
-    if (style->col_seps.rhs) {
+    if (style->col_seps.rhs)
+    {
         fputs(sep->rjunc, output);
     }
 
     fputc('\n', output);
 }
 
-static void print_row(FILE *output, table_format_t *style, char **fields, int field_count,
-                     int *widths, int col_count, alignment_t align, int row_number) {
+static void print_row(FILE           *output,
+                      table_format_t *style,
+                      char          **fields,
+                      int             field_count,
+                      int            *widths,
+                      int             col_count,
+                      alignment_t     align,
+                      int             row_number)
+{
     // Print indent
-    for (int i = 0; i < style->indent; i++) {
+    for (int i = 0; i < style->indent; i++)
+    {
         fputc(' ', output);
     }
 
     // Print left border
-    if (style->col_seps.lhs) {
+    if (style->col_seps.lhs)
+    {
         fputs(style->col_seps.lhs, output);
     }
 
     // Print cells
-    for (int i = 0; i < col_count; i++) {
+    for (int i = 0; i < col_count; i++)
+    {
         // Print padding
-        for (int j = 0; j < style->padding; j++) {
+        for (int j = 0; j < style->padding; j++)
+        {
             fputc(' ', output);
         }
 
         // Get field content
         char *content;
-        if (i == 0 && row_number != 0) {
+        if (i == 0 && row_number != 0)
+        {
             // Sequence number column
-            if (row_number == -1) {
+            if (row_number == -1)
+            {
                 // Header row with sequence numbers
                 content = strdup("#");
-            } else {
+            }
+            else
+            {
                 // Data row with sequence numbers
                 content = malloc(20);
                 snprintf(content, 20, "%d", row_number);
             }
-        } else {
+        }
+        else
+        {
             int field_index = (row_number != 0) ? i - 1 : i;
-            if (field_index >= 0 && field_index < field_count && fields[field_index]) {
+            if (field_index >= 0 && field_index < field_count && fields[field_index])
+            {
                 content = strdup(fields[field_index]);
-            } else {
+            }
+            else
+            {
                 content = strdup("");
             }
         }
 
         // Pad content to column width
         char *padded = calc_pad(content, widths[i], align, true);
-        if (padded) {
+        if (padded)
+        {
             fputs(padded, output);
             free(padded);
         }
         free(content);
 
         // Print padding
-        for (int j = 0; j < style->padding; j++) {
+        for (int j = 0; j < style->padding; j++)
+        {
             fputc(' ', output);
         }
 
         // Print column separator
-        if (style->col_seps.mid && i < col_count - 1) {
+        if (style->col_seps.mid && i < col_count - 1)
+        {
             fputs(style->col_seps.mid, output);
         }
     }
 
     // Print right border
-    if (style->col_seps.rhs) {
+    if (style->col_seps.rhs)
+    {
         fputs(style->col_seps.rhs, output);
     }
 
     fputc('\n', output);
 }
 
-int print_table(struct csv_data *csv, struct cli_args *args) {
-    if (!csv) return -1;
+int print_table(struct csv_data *csv, struct cli_args *args)
+{
+    if (!csv)
+        return -1;
 
-    table_format_t *style = create_table_style(args->style, args->padding, args->indent,
-                                              args->header_align, args->body_align);
-    if (!style) return -1;
+    table_format_t *style = create_table_style(
+        args->style, args->padding, args->indent, args->header_align, args->body_align);
+    if (!style)
+        return -1;
 
     FILE *output = stdout;
 
@@ -333,40 +399,76 @@ int print_table(struct csv_data *csv, struct cli_args *args) {
     print_row_separator(output, style, csv->column_widths, csv->max_columns, style->row_seps.top);
 
     // Print header
-    if (csv->header) {
-        char **header_fields = csv->header->fields;
-        int header_field_count = csv->header->field_count;
+    if (csv->header)
+    {
+        char **header_fields      = csv->header->fields;
+        int    header_field_count = csv->header->field_count;
 
         // Add sequence header if needed
-        if (args->number) {
-            print_row(output, style, header_fields, header_field_count,
-                     csv->column_widths, csv->max_columns, style->header_align, -1);
-        } else {
-            print_row(output, style, header_fields, header_field_count,
-                     csv->column_widths, csv->max_columns, style->header_align, 0);
+        if (args->number)
+        {
+            print_row(output,
+                      style,
+                      header_fields,
+                      header_field_count,
+                      csv->column_widths,
+                      csv->max_columns,
+                      style->header_align,
+                      -1);
+        }
+        else
+        {
+            print_row(output,
+                      style,
+                      header_fields,
+                      header_field_count,
+                      csv->column_widths,
+                      csv->max_columns,
+                      style->header_align,
+                      0);
         }
 
         // Print header separator
-        if (csv->record_count > 0) {
-            print_row_separator(output, style, csv->column_widths, csv->max_columns, style->row_seps.snd);
+        if (csv->record_count > 0)
+        {
+            print_row_separator(
+                output, style, csv->column_widths, csv->max_columns, style->row_seps.snd);
         }
     }
 
     // Print data rows
-    for (int i = 0; i < csv->record_count; i++) {
+    for (int i = 0; i < csv->record_count; i++)
+    {
         struct csv_record *record = &csv->records[i];
 
-        if (args->number) {
-            print_row(output, style, record->fields, record->field_count,
-                     csv->column_widths, csv->max_columns, style->body_align, i + 1);
-        } else {
-            print_row(output, style, record->fields, record->field_count,
-                     csv->column_widths, csv->max_columns, style->body_align, 0);
+        if (args->number)
+        {
+            print_row(output,
+                      style,
+                      record->fields,
+                      record->field_count,
+                      csv->column_widths,
+                      csv->max_columns,
+                      style->body_align,
+                      i + 1);
+        }
+        else
+        {
+            print_row(output,
+                      style,
+                      record->fields,
+                      record->field_count,
+                      csv->column_widths,
+                      csv->max_columns,
+                      style->body_align,
+                      0);
         }
 
         // Print middle separator if needed
-        if (style->row_seps.mid && i < csv->record_count - 1) {
-            print_row_separator(output, style, csv->column_widths, csv->max_columns, style->row_seps.mid);
+        if (style->row_seps.mid && i < csv->record_count - 1)
+        {
+            print_row_separator(
+                output, style, csv->column_widths, csv->max_columns, style->row_seps.mid);
         }
     }
 
