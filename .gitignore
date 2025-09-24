@@ -1,0 +1,5 @@
+# C version build artifacts
+*.o
+src/*.o
+csview
+test*.csv
