@@ -47,3 +47,11 @@ make test                            # Run test
 - Multiple table styles (Unicode box drawing, ASCII, markdown)
 - Custom delimiters and TSV support
 - Line numbering
+
+### Credits
+
+* [csview](https://github.com/wfxr/csview)
+
+### License
+
+`csview` is distributed under the terms of both the MIT License and the Apache License 2.0.
