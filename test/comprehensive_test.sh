@@ -220,6 +220,16 @@ test_edge_cases() {
     run_test "numbers_mixed" "$DATA_DIR/numbers_mixed.csv" "" "Mixed number formats"
 }
 
+# Test large datasets and sniff behavior
+test_large_datasets() {
+    echo -e "${CYAN}=== Large Dataset Tests ===${NC}"
+    
+    run_test "query_default" "$DATA_DIR/query.csv" "" "Large dataset (6000+ rows) with default sniff"
+    run_test "query_sniff_100" "$DATA_DIR/query.csv" "--sniff 100" "Large dataset with sniff limit 100"
+    run_test "query_sniff_0" "$DATA_DIR/query.csv" "--sniff 0" "Large dataset with sniff disabled"
+    run_test "query_no_headers" "$DATA_DIR/query.csv" "-H" "Large dataset without headers"
+}
+
 # Test complex combinations
 test_complex_combinations() {
     echo -e "${CYAN}=== Complex Parameter Combination Tests ===${NC}"
@@ -248,6 +258,7 @@ main() {
     test_alignment
     test_unicode_special
     test_edge_cases
+    test_large_datasets
     test_complex_combinations
     
     # Final summary

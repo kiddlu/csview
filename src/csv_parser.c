@@ -79,6 +79,7 @@ static void record_callback(int c __attribute__((unused)), void *data)
     if (state->is_header && !state->no_headers)
     {
         state->csv->header = state->current_record;
+        // Always update column widths for headers (sniff limit applies to data rows only)
         update_column_widths(state->csv, state->csv->header);
         state->is_header      = false;
         state->current_record = NULL;
@@ -95,19 +96,18 @@ static void record_callback(int c __attribute__((unused)), void *data)
     }
 
     state->csv->records[state->csv->record_count] = *state->current_record;
-    update_column_widths(state->csv, &state->csv->records[state->csv->record_count]);
+    
+    // Only update column widths if we haven't reached the sniff limit
+    if (state->sniff_limit == 0 || state->record_count < state->sniff_limit)
+    {
+        update_column_widths(state->csv, &state->csv->records[state->csv->record_count]);
+    }
 
     state->csv->record_count++;
     state->record_count++;
 
     free(state->current_record);
     state->current_record = NULL;
-
-    // Check sniff limit
-    if (state->sniff_limit > 0 && state->record_count >= state->sniff_limit)
-    {
-        // Signal to stop parsing by returning non-zero (but libcsv doesn't support this directly)
-    }
 }
 
 int parse_csv(FILE *input, struct csv_data *csv, struct cli_args args)
@@ -158,11 +158,8 @@ int parse_csv(FILE *input, struct csv_data *csv, struct cli_args args)
             return -1;
         }
 
-        // Check if we've reached the sniff limit
-        if (state.sniff_limit > 0 && state.record_count >= state.sniff_limit)
-        {
-            break;
-        }
+        // Continue parsing all records even after sniff limit
+        // The sniff limit only affects column width calculation
     }
 
     // Finalize parsing
