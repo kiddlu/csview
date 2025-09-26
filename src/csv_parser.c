@@ -79,7 +79,6 @@ static void record_callback(int c __attribute__((unused)), void *data)
     if (state->is_header && !state->no_headers)
     {
         state->csv->header = state->current_record;
-        // Always update column widths for headers (sniff limit applies to data rows only)
         update_column_widths(state->csv, state->csv->header);
         state->is_header      = false;
         state->current_record = NULL;
@@ -96,7 +95,7 @@ static void record_callback(int c __attribute__((unused)), void *data)
     }
 
     state->csv->records[state->csv->record_count] = *state->current_record;
-    
+
     // Only update column widths if we haven't reached the sniff limit
     if (state->sniff_limit == 0 || state->record_count < state->sniff_limit)
     {
