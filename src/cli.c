@@ -7,6 +7,9 @@
 
 #include "cli.h"
 
+// Global variable to track pager process
+static pid_t pager_pid = -1;
+
 static table_style_t parse_style(const char *style_str)
 {
     if (strcasecmp(style_str, "none") == 0)
@@ -260,8 +263,23 @@ void setup_pager(bool disable_pager)
     else
     {
         // Parent process: redirect stdout to pipe
+        pager_pid = pid;                 // Save pager pid
         close(pipefd[0]);                // Close read end
         dup2(pipefd[1], STDOUT_FILENO);  // Redirect stdout to write end of pipe
         close(pipefd[1]);
+    }
+}
+
+void wait_for_pager(void)
+{
+    if (pager_pid > 0)
+    {
+        // Close stdout to signal end of data to pager
+        fclose(stdout);
+
+        // Wait for pager to exit
+        int status;
+        waitpid(pager_pid, &status, 0);
+        pager_pid = -1;
     }
 }

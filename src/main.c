@@ -72,5 +72,8 @@ int main(int argc, char *argv[])
     free_csv_data(&csv);
     free_cli_args(&args);
 
+    // Wait for pager to finish if it was started
+    wait_for_pager();
+
     return ret;
 }

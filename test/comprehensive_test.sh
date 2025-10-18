@@ -202,6 +202,10 @@ test_unicode_special() {
     run_test "cjk_mixed" "$DATA_DIR/cjk_mixed.csv" "" "Mixed CJK characters"
     run_test "cjk_mixed_no_headers" "$DATA_DIR/cjk_mixed.csv" "-H" "Mixed CJK without headers"
     
+    run_test "chinese_sectors" "$DATA_DIR/chinese_sectors.csv" "" "Chinese sector data"
+    run_test "chinese_sectors_no_headers" "$DATA_DIR/chinese_sectors.csv" "-H" "Chinese sectors without headers"
+    run_test "chinese_sectors_with_numbers" "$DATA_DIR/chinese_sectors.csv" "-n" "Chinese sectors with line numbers"
+    
     run_test "emoji_data" "$DATA_DIR/emoji_data.csv" "" "Emoji data"
     run_test "emoji_no_headers" "$DATA_DIR/emoji_data.csv" "-H" "Emoji without headers"
     run_test "emoji_with_numbers" "$DATA_DIR/emoji_data.csv" "-n" "Emoji with numbers"

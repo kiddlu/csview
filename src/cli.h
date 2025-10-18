@@ -44,5 +44,6 @@ int  parse_cli_args(int argc, char *argv[], struct cli_args *args);
 void print_help(const char *program_name);
 void free_cli_args(struct cli_args *args);
 void setup_pager(bool disable_pager);
+void wait_for_pager(void);
 
 #endif  // CLI_H
