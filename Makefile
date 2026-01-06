@@ -37,6 +37,7 @@ endef
 
 define shcmd-test
 	@echo "[shcmd-test]"
+	@cd test && bash test_with_rust.sh
 endef
 
 .PHONY: all clean rm pre test
