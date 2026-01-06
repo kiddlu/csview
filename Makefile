@@ -1,6 +1,6 @@
 CPUS=$(shell cat /proc/cpuinfo | grep "processor" | wc -l)
-PWD=$(shell pwd)
-BUILD_DIR=$(PWD)/build
+CUR_MK_PATH=$(shell dirname "$(abspath $(lastword $(MAKEFILE_LIST)))")
+BUILD_DIR=$(CUR_MK_PATH)/build
 MAKE_OPT=
 
 define shcmd-makepre
@@ -35,7 +35,11 @@ define shcmd-post-make-custom
 	@echo "[shcmd-post-make-custom]"
 endef
 
-.PHONY: all clean rm pre
+define shcmd-test
+	@echo "[shcmd-test]"
+endef
+
+.PHONY: all clean rm pre test
 all: pre
 	$(call shcmd-pre-make-custom)
 	$(call shcmd-make)
@@ -49,3 +53,6 @@ rm:
 
 pre:
 	$(call shcmd-makepre)
+
+test:
+	$(call shcmd-test)

@@ -5,7 +5,7 @@ project(csview C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-add_definitions(
+add_definitions (
 	-O3
 )
 
@@ -22,10 +22,13 @@ ${PROJECT_SOURCE_DIR}/src/table_printer.c
 ${PROJECT_SOURCE_DIR}/src/utils.c
 )
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
+#static link
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+
+include_directories (${PROJECT_SOURCE_DIR}/src/)
 
 add_executable(csview ${SOURCES})
-# Compiler warning options (strict mode, ordered by importance)
+# Compiler warning options
 # === Critical: Security and correctness ===
 # -Wall: Enable common warnings
 # -Wextra: Enable extra warnings
@@ -46,6 +49,7 @@ add_executable(csview ${SOURCES})
 # -Wimplicit-fallthrough=5: Warn when a switch case falls through (level 5) - prevents accidental fallthrough
 # === Moderate: Code quality ===
 # -Wshadow: Warn when a variable shadows another - prevents confusion
+# -Wfloat-equal: Warn if floating-point numbers are compared for equality - prevents precision issues
 # -Wduplicated-cond: Warn about duplicated conditions in if-else-if chains - code quality
 # -Wduplicated-branches: Warn about duplicated branches in if-else statements - code quality
 # -Wlogical-op: Warn about suspicious uses of logical operators - code quality
@@ -68,9 +72,11 @@ target_compile_options(csview PRIVATE
     -Wswitch-default
     -Wimplicit-fallthrough=5
     -Wshadow
+    -Wfloat-equal
     -Wduplicated-cond
     -Wduplicated-branches
     -Wlogical-op
     -Wpedantic
 )
+
 target_link_libraries(csview -lcsv -lunistring -lm)
