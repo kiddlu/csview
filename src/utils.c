@@ -19,11 +19,9 @@ int unicode_display_width(const char *str)
     const char *line_end;
     int         max_width = 0;
 
-    while ((line_end = strchr(line_start, '\n')) != NULL)
-    {
-        size_t line_len = line_end - line_start;
-        if (line_len > 0)
-        {
+    while ((line_end = strchr(line_start, '\n')) != NULL) {
+        size_t line_len = (size_t)(line_end - line_start);
+        if (line_len > 0) {
             int line_width = u8_width((const uint8_t *)line_start, line_len, "UTF-8");
             if (line_width < 0)
                 line_width = (int)line_len;
@@ -35,8 +33,7 @@ int unicode_display_width(const char *str)
 
     // Handle the last line (or the only line if no newlines)
     size_t last_line_len = strlen(line_start);
-    if (last_line_len > 0)
-    {
+    if (last_line_len > 0) {
         int last_line_width = u8_width((const uint8_t *)line_start, last_line_len, "UTF-8");
         if (last_line_width < 0)
             last_line_width = (int)last_line_len;

@@ -4,31 +4,27 @@
 #include "cli.h"
 #include "csv_parser.h"
 
-typedef struct
-{
+typedef struct {
     char *inner;  // Inner row separator (e.g., "─")
     char *ljunc;  // Left junction (e.g., "├")
     char *cjunc;  // Cross junction (e.g., "┼")
     char *rjunc;  // Right junction (e.g., "┤")
 } row_sep_t;
 
-typedef struct
-{
+typedef struct {
     row_sep_t *top;  // Top border
     row_sep_t *snd;  // Second row (header separator)
     row_sep_t *mid;  // Middle rows (between data rows)
     row_sep_t *bot;  // Bottom border
 } row_seps_t;
 
-typedef struct
-{
+typedef struct {
     char *lhs;  // Left border
     char *mid;  // Column separator
     char *rhs;  // Right border
 } col_seps_t;
 
-typedef struct
-{
+typedef struct {
     col_seps_t  col_seps;
     row_seps_t  row_seps;
     int         padding;

@@ -1,51 +1,51 @@
-# Makefile for csview C implementation
+CPUS=$(shell cat /proc/cpuinfo | grep "processor" | wc -l)
+PWD=$(shell pwd)
+BUILD_DIR=$(PWD)/build
+MAKE_OPT=
 
-CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -O2 -D_GNU_SOURCE
-LDFLAGS = -lcsv -lunistring
-TARGET = csview
-SRCDIR = src
-SOURCES = $(wildcard $(SRCDIR)/*.c)
-OBJECTS = $(SOURCES:.c=.o)
+define shcmd-makepre
+	@echo "[shcmd-makepre]"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && cmake ..
+endef
 
-.PHONY: all clean install uninstall
+define shcmd-make
+	@echo "[shcmd-make]"
+	@cd $(BUILD_DIR) && make -j$(CPUS) $(MAKE_OPT) | grep -v "^make\[[0-9]\]:"
+endef
 
-all: $(TARGET)
+define shcmd-makeclean
+	@echo "[shcmd-makeclean]"
+	@if [ -d $(BUILD_DIR) ]; then (cd $(BUILD_DIR) && make clean && echo "##Clean build##"); fi
+endef
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+define shcmd-makerm
+	@echo "[shcmd-makerm]"
+	@if [ -d $(BUILD_DIR) ]; then (rm -rf $(BUILD_DIR)); fi
+endef
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+define shcmd-pre-make-custom
+	@echo "[shcmd-pre-make-custom]"
+	@echo Codelines Sum:
+	@find src -type f \( -name "*.c" -o -name "*.h" \) -exec wc -l {} + | tail -1
+	@find src -type f \( -name "*.c" -o -name "*.h" \) -print0 | xargs -0 -P $(CPUS) clang-format -i
+endef
+
+define shcmd-post-make-custom
+	@echo "[shcmd-post-make-custom]"
+endef
+
+.PHONY: all clean rm pre
+all: pre
+	$(call shcmd-pre-make-custom)
+	$(call shcmd-make)
+	$(call shcmd-post-make-custom)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	$(call shcmd-makeclean)
 
-install: $(TARGET)
-	install -D $(TARGET) $(DESTDIR)/usr/local/bin/$(TARGET)
+rm:
+	$(call shcmd-makerm)
 
-uninstall:
-	rm -f $(DESTDIR)/usr/local/bin/$(TARGET)
-
-# Debug build
-debug: CFLAGS += -g -DDEBUG
-debug: $(TARGET)
-
-# Test with example CSV
-test: $(TARGET)
-	echo "Year,Make,Model,Description,Price" > test.csv
-	echo "1997,Ford,E350,\"ac, abs, moon\",3000.00" >> test.csv
-	echo "1999,Chevy,\"Venture \"\"Extended Edition\"\"\",\"\",4900.00" >> test.csv
-	echo "1999,Chevy,\"Venture \"\"Extended Edition, Large\"\"\",\"\",5000.00" >> test.csv
-	echo "1996,Jeep,Grand Cherokee,\"MUST SELL! air, moon roof\",4799.00" >> test.csv
-	./$(TARGET) test.csv
-	rm -f test.csv
-
-# Test with CJK characters
-test-cjk: $(TARGET)
-	echo "姓名,城市,符号" > test-cjk.csv
-	echo "李磊(Jack),四川省成都市,💍" >> test-cjk.csv
-	echo "张三,北京市,🎉" >> test-cjk.csv
-	echo "王五,上海市,🌟" >> test-cjk.csv
-	./$(TARGET) test-cjk.csv
-	rm -f test-cjk.csv
+pre:
+	$(call shcmd-makepre)

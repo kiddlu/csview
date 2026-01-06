@@ -3,8 +3,7 @@
 
 #include <stdbool.h>
 
-typedef enum
-{
+typedef enum {
     STYLE_NONE,
     STYLE_ASCII,
     STYLE_ASCII2,
@@ -15,15 +14,13 @@ typedef enum
     STYLE_GRID
 } table_style_t;
 
-typedef enum
-{
+typedef enum {
     ALIGN_LEFT,
     ALIGN_CENTER,
     ALIGN_RIGHT
 } alignment_t;
 
-struct cli_args
-{
+struct cli_args {
     char         *file;
     bool          no_headers;
     bool          number;

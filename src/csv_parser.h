@@ -5,14 +5,12 @@
 
 #include "cli.h"
 
-struct csv_record
-{
+struct csv_record {
     char **fields;
     int    field_count;
 };
 
-struct csv_data
-{
+struct csv_data {
     struct csv_record *header;
     struct csv_record *records;
     int                record_count;
