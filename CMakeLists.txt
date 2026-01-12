@@ -80,3 +80,13 @@ target_compile_options(csview PRIVATE
 )
 
 target_link_libraries(csview -lcsv -lunistring -lm)
+
+# Install target - use parent's TARGET_ARCH if available
+if(DEFINED TARGET_ARCH)
+    set(INSTALL_DEST "bin/${TARGET_ARCH}")
+else()
+    set(INSTALL_DEST "bin")
+endif()
+install(TARGETS csview
+    RUNTIME DESTINATION ${INSTALL_DEST}
+)

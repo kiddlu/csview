@@ -122,7 +122,7 @@ int parse_csv(FILE *input, struct csv_data *csv, struct cli_args args)
 
     // Set delimiter
     char delimiter = args.tsv ? '\t' : args.delimiter;
-    csv_set_delim(&parser, delimiter);
+    csv_set_delim(&parser, (unsigned char)delimiter);
 
     // Set up parsing state
     struct parse_state state = {.csv            = csv,
