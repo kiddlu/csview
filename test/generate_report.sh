@@ -11,8 +11,8 @@ echo "Generated on: $(date)" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
 
 # Count test results
-total_tests=$(ls -1 "${OUTPUT_DIR}"/*_c.txt 2>/dev/null | wc -l)
-failed_tests=$(ls -1 "${OUTPUT_DIR}"/*_diff.txt 2>/dev/null | wc -l)
+total_tests=$(ls -1 "${OUTPUT_DIR}"/*_c.txt 2> /dev/null | wc -l)
+failed_tests=$(ls -1 "${OUTPUT_DIR}"/*_diff.txt 2> /dev/null | wc -l)
 passed_tests=$((total_tests - failed_tests))
 
 echo "## Summary" >> "$REPORT_FILE"
@@ -20,23 +20,23 @@ echo "" >> "$REPORT_FILE"
 echo "- **Total Tests**: $total_tests" >> "$REPORT_FILE"
 echo "- **Passed**: $passed_tests" >> "$REPORT_FILE"
 echo "- **Failed**: $failed_tests" >> "$REPORT_FILE"
-echo "- **Success Rate**: $(( (passed_tests * 100) / total_tests ))%" >> "$REPORT_FILE"
+echo "- **Success Rate**: $(((passed_tests * 100) / total_tests))%" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
 
 if [[ $failed_tests -gt 0 ]]; then
     echo "## Failed Tests" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"
-    
+
     for diff_file in "${OUTPUT_DIR}"/*_diff.txt; do
         if [[ -f "$diff_file" ]]; then
             test_name=$(basename "$diff_file" _diff.txt)
             echo "### Test: $test_name" >> "$REPORT_FILE"
             echo "" >> "$REPORT_FILE"
-            
+
             # Check for crashes
             c_err="${OUTPUT_DIR}/${test_name}_c.err"
             rust_err="${OUTPUT_DIR}/${test_name}_rust.err"
-            
+
             if [[ -s "$c_err" ]]; then
                 echo "**C Version Error:**" >> "$REPORT_FILE"
                 echo '```' >> "$REPORT_FILE"
@@ -44,7 +44,7 @@ if [[ $failed_tests -gt 0 ]]; then
                 echo '```' >> "$REPORT_FILE"
                 echo "" >> "$REPORT_FILE"
             fi
-            
+
             if [[ -s "$rust_err" ]]; then
                 echo "**Rust Version Error:**" >> "$REPORT_FILE"
                 echo '```' >> "$REPORT_FILE"
@@ -52,7 +52,7 @@ if [[ $failed_tests -gt 0 ]]; then
                 echo '```' >> "$REPORT_FILE"
                 echo "" >> "$REPORT_FILE"
             fi
-            
+
             echo "**Output Difference:**" >> "$REPORT_FILE"
             echo '```diff' >> "$REPORT_FILE"
             head -20 "$diff_file" >> "$REPORT_FILE"
@@ -77,10 +77,10 @@ categories["emoji"]="Emoji Support"
 categories["complex"]="Complex Combinations"
 
 for category in "${!categories[@]}"; do
-    category_tests=$(ls -1 "${OUTPUT_DIR}"/${category}*_c.txt 2>/dev/null | wc -l)
-    category_failed=$(ls -1 "${OUTPUT_DIR}"/${category}*_diff.txt 2>/dev/null | wc -l)
+    category_tests=$(ls -1 "${OUTPUT_DIR}"/${category}*_c.txt 2> /dev/null | wc -l)
+    category_failed=$(ls -1 "${OUTPUT_DIR}"/${category}*_diff.txt 2> /dev/null | wc -l)
     category_passed=$((category_tests - category_failed))
-    
+
     if [[ $category_tests -gt 0 ]]; then
         echo "- **${categories[$category]}**: $category_passed/$category_tests passed" >> "$REPORT_FILE"
     fi
@@ -93,15 +93,15 @@ echo "" >> "$REPORT_FILE"
 if [[ $failed_tests -gt 0 ]]; then
     echo "### Issues Found" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"
-    
-    if grep -q "malloc" "${OUTPUT_DIR}"/*_c.err 2>/dev/null; then
+
+    if grep -q "malloc" "${OUTPUT_DIR}"/*_c.err 2> /dev/null; then
         echo "1. **Memory Management Issues**: C version has memory allocation problems with complex Unicode data" >> "$REPORT_FILE"
     fi
-    
-    if grep -q "CSV error" "${OUTPUT_DIR}"/*_rust.err 2>/dev/null; then
+
+    if grep -q "CSV error" "${OUTPUT_DIR}"/*_rust.err 2> /dev/null; then
         echo "2. **CSV Parsing Differences**: Versions handle malformed CSV differently" >> "$REPORT_FILE"
     fi
-    
+
     echo "" >> "$REPORT_FILE"
     echo "### Suggested Actions" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"

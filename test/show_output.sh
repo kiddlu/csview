@@ -2,7 +2,8 @@
 
 # Show output examples for specific test cases
 
-usage() {
+usage()
+{
     echo "Usage: $0 <data_file> [arguments]"
     echo "Examples:"
     echo "  $0 basic.csv"
@@ -11,7 +12,7 @@ usage() {
     echo "  $0 emoji_data.csv -n -s rounded"
     echo ""
     echo "Available test data files:"
-    ls -1 data/*.csv data/*.tsv 2>/dev/null | sed 's/data\//  /' | sort
+    ls -1 data/*.csv data/*.tsv 2> /dev/null | sed 's/data\//  /' | sort
 }
 
 if [[ $# -eq 0 ]]; then
@@ -59,11 +60,11 @@ c_output=$(mktemp)
 rust_output=$(mktemp)
 
 if [[ -n "$ARGS" ]]; then
-    eval "../csview $ARGS \"$DATA_FILE\"" > "$c_output" 2>/dev/null
-    eval "../csview.rust $ARGS \"$DATA_FILE\"" > "$rust_output" 2>/dev/null
+    eval "../csview $ARGS \"$DATA_FILE\"" > "$c_output" 2> /dev/null
+    eval "../csview.rust $ARGS \"$DATA_FILE\"" > "$rust_output" 2> /dev/null
 else
-    ../csview "$DATA_FILE" > "$c_output" 2>/dev/null
-    ../csview.rust "$DATA_FILE" > "$rust_output" 2>/dev/null
+    ../csview "$DATA_FILE" > "$c_output" 2> /dev/null
+    ../csview.rust "$DATA_FILE" > "$rust_output" 2> /dev/null
 fi
 
 if diff -q "$c_output" "$rust_output" > /dev/null; then

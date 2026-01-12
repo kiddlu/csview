@@ -21,16 +21,16 @@ NC='\033[0m' # No Color
 # Detect architecture
 ARCH=$(uname -m)
 case "$ARCH" in
-    aarch64)
-        RUST_URL="https://github.com/wfxr/csview/releases/download/v1.3.4/csview-v1.3.4-aarch64-unknown-linux-musl.tar.gz"
-        ;;
-    x86_64)
-        RUST_URL="https://github.com/wfxr/csview/releases/download/v1.3.4/csview-v1.3.4-x86_64-unknown-linux-musl.tar.gz"
-        ;;
-    *)
-        echo -e "${RED}Error: Unsupported architecture: $ARCH${NC}"
-        exit 1
-        ;;
+aarch64)
+    RUST_URL="https://github.com/wfxr/csview/releases/download/v1.3.4/csview-v1.3.4-aarch64-unknown-linux-musl.tar.gz"
+    ;;
+x86_64)
+    RUST_URL="https://github.com/wfxr/csview/releases/download/v1.3.4/csview-v1.3.4-x86_64-unknown-linux-musl.tar.gz"
+    ;;
+*)
+    echo -e "${RED}Error: Unsupported architecture: $ARCH${NC}"
+    exit 1
+    ;;
 esac
 
 echo -e "${BLUE}Architecture detected: $ARCH${NC}"
@@ -51,12 +51,12 @@ mkdir -p "$RUST_DOWNLOAD_DIR"
 
 if [ ! -f "$RUST_EXEC" ] || [ ! -x "$RUST_EXEC" ]; then
     echo -e "${YELLOW}Downloading Rust version...${NC}"
-    if command -v curl >/dev/null 2>&1; then
+    if command -v curl > /dev/null 2>&1; then
         curl -L -o "$RUST_TAR" "$RUST_URL" || {
             echo -e "${RED}Download failed${NC}"
             exit 1
         }
-    elif command -v wget >/dev/null 2>&1; then
+    elif command -v wget > /dev/null 2>&1; then
         wget -O "$RUST_TAR" "$RUST_URL" || {
             echo -e "${RED}Download failed${NC}"
             exit 1
@@ -65,15 +65,15 @@ if [ ! -f "$RUST_EXEC" ] || [ ! -x "$RUST_EXEC" ]; then
         echo -e "${RED}Error: Neither curl nor wget found. Please install one of them.${NC}"
         exit 1
     fi
-    
+
     echo -e "${YELLOW}Extracting Rust version...${NC}"
     tar -xzf "$RUST_TAR" -C "$RUST_DOWNLOAD_DIR" --strip-components=1 || {
         echo -e "${RED}Extraction failed${NC}"
         exit 1
     }
-    
+
     chmod +x "$RUST_EXEC" || true
-    
+
     # Clean up tar file
     rm -f "$RUST_TAR"
 else
@@ -84,4 +84,3 @@ fi
 echo -e "${BLUE}Running comparison tests...${NC}"
 cd "$TEST_DIR"
 bash comprehensive_test.sh -c "$C_VERSION" -r "$RUST_EXEC" "$@"
-

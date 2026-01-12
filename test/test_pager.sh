@@ -35,4 +35,3 @@ rm -f /tmp/c_pager_test.txt /tmp/rust_pager_test.txt
 
 echo
 echo "All pager tests passed!"
-
